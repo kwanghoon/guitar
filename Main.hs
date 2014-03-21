@@ -112,9 +112,9 @@ hasDifferentStrings sfs = length strings == length (nub strings)
     strings = map fst sfs
 
 nearFrets :: [(Strings, Frets)] -> Bool
-nearFrets sfs = last frets - head frets <= 4
+nearFrets sfs = length frets == 0 || last frets - head frets <= 4
   where
-    frets = sort $ map snd sfs
+    frets = filter (0/=) $ sort $ map snd sfs
     
 notRare :: (Strings, Frets) -> Bool    
 notRare (s,f) = (13 <= f && 2 <=s) == False
@@ -159,4 +159,10 @@ scaleOctavesWithStrings [(A,1), (Csharp,1), (A,0)] [Nothing, Nothing, Nothing]
 []
 *Main> scaleOctavesWithStrings [(E,2), (Gsharp,1), (E,1)] [Nothing, Just 2, Just 3]
 [[(1,12),(2,9),(3,9)]]
+
+
+Fixed...
+*Main> scaleOctavesWithStrings [(E,2), (Gsharp,1), (E,1), (E,-1)] [Nothing, Just 2, Just 3, Nothing]
+[[(1,12),(2,9),(3,9),(6,0)]]
+
 -}
