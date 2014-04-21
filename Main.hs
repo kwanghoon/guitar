@@ -52,7 +52,7 @@ navigateScoreFile revL1 fwdL2 =
      cmd <- getLine
      if cmd == "q" 
        then return (reverse revL1 ++ fwdL2) 
-       else do (revL1',fwdL2') <- process cmd revL1 fwdL2
+       else do (revL1',fwdL2') <- process (parse cmd) revL1 fwdL2
                navigateScoreFile revL1' fwdL2'
                
 prPrompt revL1 fwdL2 = do               
@@ -74,6 +74,10 @@ prHead ((notes, fretSuggestion, fingering):t) = do
   putStr (show fingering)
   putStr "\n"
   
+parse cmd = cmd
+
+data Command = 
+  NoCmd | Next | Prev | Suggest | Select Int
 
 process "" revL1 fwdL2 = return (revL1, fwdL2)
 process "n" revL1 [] = do
