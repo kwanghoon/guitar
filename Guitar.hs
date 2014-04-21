@@ -43,15 +43,16 @@ C C# D D# E F F# G G# A A# B C
 data Scale = C | D | E | F | G | A | B 
            | Csharp | Dsharp | Fsharp | Gsharp | Asharp 
            | Esharp | Bsharp  -- Esharp == F, Bsharp == C
-           deriving (Show, Eq)
+           deriving (Read, Show, Eq)
                     
-type Frets   = Int -- 0 ~ 19
 type Strings = Int -- 1 ~ 6
+type Frets   = Int -- 0 ~ 19
 type Octave  = Int -- -1 ~ 2
 
 type Guitar = [(Strings, Frets, Scale, Octave)]
 
 type Score = [([(Scale,Octave)], [Maybe Frets])]
+type ScoreFile = [([(Scale,Octave)], [Maybe Frets], [(Maybe Strings, Maybe Frets)])]
   
 guitar :: Guitar
 guitar =
@@ -65,7 +66,7 @@ guitar =
   , zip [F, C, Gsharp, Dsharp, Asharp, F] [1, 1, 0, 0, -1, -1]
   , zip [Fsharp, Csharp, A, E, B, Fsharp] [1, 1, 0, 0, -1, -1]
   , zip [G, D, Asharp, F, C, G] [1, 1, 0, 0, 0, -1]
-  , zip [Gsharp, D, Asharp, F, C, G] [1, 1, 0, 0, 0, -1]
+  , zip [Gsharp, Dsharp, B, Fsharp, Csharp, Gsharp] [1, 1, 0, 0, 0, -1]
   , zip [A, E, C, G, D, A] [1, 1, 1, 0, 0, -1]
   , zip [Asharp, F, Csharp, Gsharp, Dsharp, Asharp] [1, 1, 1, 0, 0, -1]
   , zip [B, Fsharp, D, A, E, B] [1, 1, 1, 0, 0, -1]
@@ -129,7 +130,10 @@ matchWithStrings sfs maybess =
     match (s,f) (Just s') | s == s'   = [(s,f)]
                           | otherwise = []
                                         
-
+toScoreFile :: Score -> ScoreFile
+toScoreFile score = 
+  [ (f,s,t) | (f,s) <- score
+            , let t = take (length f) (repeat (Nothing,Nothing)) ]
 
 {-                                        
 [How to use]
